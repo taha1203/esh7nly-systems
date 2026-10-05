@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESH7NLY</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+<div id="login" class="login-wrap">
+  <div class="login-card">
+    <div class="logo">ESH7NLY</div>
+    <p class="muted">إدارة المشتركين والتجار والأرباح</p>
+    <input id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
+    <input id="loginPass" placeholder="كلمة المرور" type="password" autocomplete="current-password">
+    <button id="loginBtn" class="primary full">دخول</button>
+    <div id="loginMsg" class="error"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header class="topbar">
+  <div>
+    <div id="brand" class="brand">ESH7NLY</div>
+    <div id="syncMini" class="sync-mini">محلي</div>
+  </div>
+  <div class="top-actions">
+    <button id="quickAdd" class="primary small">＋ تفعيل جديد</button>
+    <button id="logoutBtn" class="ghost small">خروج</button>
+  </div>
+</header>
+
+<main>
+<section id="homePage" class="page">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">لوحة التحكم</span>
+      <h1>أهلاً بيك 👋</h1>
+      <p>كل أرقامك ومبيعاتك وأرباحك في مكان واحد.</p>
+    </div>
+  </div>
+  <div id="homeStats" class="stat-grid"></div>
+  <div class="section-head"><h2>ملخص الأيام</h2></div>
+  <div id="dayProfitCards" class="grid two"></div>
+  <div class="section-head"><h2>تنبيهات التجديد</h2><button id="showAlertsBtn" class="link-btn">عرض الكل</button></div>
+  <div id="renewalAlerts" class="grid"></div>
+  <div class="bottom-nav">
+    <button data-page="homePage" class="nav active">الرئيسية</button>
+    <button data-page="vodafonePage" class="nav">فودافون</button>
+    <button data-page="merchantsPage" class="nav">التجار</button>
+    <button data-page="dashboardPage" class="nav">الإعدادات</button>
+  </div>
+</section>
+
+<section id="etisalatPage" class="page hidden">
+  <div class="empty-state"><div class="big-icon">📡</div><h2>اتصالات</h2><p>الميزة دي هتكون متاحة قريبًا.</p></div>
+</section>
+
+<section id="vodafonePage" class="page hidden">
+  <div class="page-title"><div><span class="eyebrow">Vodafone</span><h2>اختار القسم</h2></div></div>
+  <div class="choice-grid">
+    <button class="choice" data-page="subscribersPage"><b>👥 المشتركين</b><span>التفعيلات والتجديد والتحصيل</span></button>
+    <button class="choice" data-page="merchantsPage"><b>🏪 التجار</b><span>مبيعات وتكلفة وربح كل تاجر</span></button>
+    <button class="choice" data-page="etisalatPage"><b>📡 اتصالات</b><span>قريبًا</span></button>
+  </div>
+</section>
+
+<section id="subscribersPage" class="page hidden">
+  <div class="page-title">
+    <div><span class="eyebrow">Vodafone</span><h2>المشتركين</h2></div>
+    <button id="addSubscriberBtn" class="primary">＋ تفعيل</button>
+  </div>
+  <div class="tabs">
+    <button class="day active" data-day="11">يوم 11</button>
+    <button class="day" data-day="26">يوم 26</button>
+  </div>
+  <div id="subscriberSummary" class="summary"></div>
+  <div class="filters">
+    <input id="search" placeholder="🔎 ابحث بالاسم أو الرقم">
+    <select id="statusFilter"><option value="all">كل الحالات</option><option value="unpaid">غير مسدد</option><option value="paid">مسدد</option></select>
+    <select id="merchantFilter"><option value="all">كل التجار</option><option value="abd">عبد الحكيم</option><option value="osama">أسامة</option></select>
+    <select id="packageFilter"><option value="all">كل الباقات</option><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option><option>60</option><option>70</option></select>
+  </div>
+  <div class="toolbar">
+    <button id="selectAllBtn" class="ghost">تحديد الكل</button>
+    <button id="paySelectedBtn" class="primary">تسديد المحدد</button>
+    <button id="payOwaisBtn" class="warning">تسديد حساب عويس</button>
+  </div>
+  <div id="subscriberList" class="grid"></div>
+</section>
+
+<section id="merchantsPage" class="page hidden">
+  <div class="page-title"><div><span class="eyebrow">Vodafone</span><h2>التجار</h2></div></div>
+  <div class="tabs">
+    <button class="merchant-tab active" data-merchant="abd">عبد الحكيم</button>
+    <button class="merchant-tab" data-merchant="osama">أسامة</button>
+  </div>
+  <div id="merchantSummary" class="summary"></div>
+  <div id="merchantList" class="grid"></div>
+</section>
+
+<section id="dashboardPage" class="page hidden">
+  <div class="page-title"><div><span class="eyebrow">ESH7NLY</span><h2>الإعدادات والتقارير</h2></div></div>
+  <div id="reportStats" class="stat-grid"></div>
+  <div class="panel">
+    <h3>تكلفة شراء الباقات</h3>
+    <div id="costInputs" class="cost-grid"></div>
+    <button id="saveCostsBtn" class="primary">حفظ التكاليف</button>
+  </div>
+  <div class="panel">
+    <h3>حساب عويس</h3>
+    <div id="owaisAccount" class="owais-box"></div>
+    <button id="payOwaisAllBtn" class="warning">تسديد كامل حساب عويس</button>
+  </div>
+  <div class="panel">
+    <h3>إعدادات الدخول</h3>
+    <div class="form-grid">
+      <label>اسم المستخدم<input id="settingUser"></label>
+      <label>كلمة المرور<input id="settingPass" type="password"></label>
+    </div>
+    <button id="saveLoginBtn" class="primary">حفظ</button>
+  </div>
+  <div class="panel">
+    <h3>النسخ الاحتياطي والمزامنة</h3>
+    <div class="actions wrap">
+      <button id="exportBtn" class="ghost">⬇ تصدير نسخة</button>
+      <label class="file-btn">⬆ استيراد نسخة<input id="importFile" type="file" accept=".json"></label>
+      <button id="forceSyncBtn" class="ghost">↻ مزامنة الآن</button>
+    </div>
+    <div id="syncStatus" class="muted"></div>
+  </div>
+  <div class="panel">
+    <h3>سجل العمليات</h3>
+    <div id="activityLog" class="log"></div>
+  </div>
+</section>
+</main>
+</div>
+
+<div id="modal" class="modal hidden">
+<div class="modal-card">
+  <div class="modal-head"><h2 id="modalTitle">تفعيل جديد</h2><button id="closeModal" class="icon-btn">×</button></div>
+  <form id="subscriberForm">
+    <input id="editId" type="hidden">
+    <div class="form-grid">
+      <label>الاسم<input id="fName" required></label>
+      <label>رقم المشترك<input id="fNumber" inputmode="tel" required></label>
+      <label>رقم التواصل<input id="fContact" inputmode="tel"></label>
+      <label>واتساب<input id="fWhatsapp" placeholder="https://wa.me/..."></label>
+      <label>الباقة<select id="fPackage"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option><option>60</option><option>70</option></select></label>
+      <label>سعر البيع<input id="fPrice" type="number" min="0" required></label>
+      <label>الباسورد<input id="fPassword"></label>
+      <label>تاريخ الاستحقاق<input id="fDueDate" type="date"></label>
+      <label>التاجر<select id="fMerchant"><option value="abd">عبد الحكيم</option><option value="osama">أسامة</option></select></label>
+    </div>
+    <label>ملاحظات<textarea id="fNotes"></textarea></label>
+    <label class="check"><input id="fOwais" type="checkbox"> تبع عويس</label>
+    <div id="costWarning" class="warning-box hidden"></div>
+    <button class="primary full" type="submit">حفظ التفعيل</button>
+  </form>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
